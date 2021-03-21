@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.pdo;
+package ru.netology.cloud_storage.entity.pdo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,18 +12,20 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Users", indexes = {@Index(name = "SEC_INDEX", columnList = "login")})
 
-public class User {
+public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String login;
+
     private String password;
 
     @OneToOne()
     private Role role;
 
-    public User(String login, String password, Role role) {
+    public Users(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;

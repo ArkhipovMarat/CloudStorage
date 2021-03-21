@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.pdo;
+package ru.netology.cloud_storage.entity.pdo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +20,9 @@ public class FileStorageData {
     private String filepath;
 
     @OneToOne
-    private User user;
+    private Users user;
 
-    public FileStorageData(String filename, String filepath, User user) {
+    public FileStorageData(String filename, String filepath, Users user) {
         this.filename = filename;
         this.filepath = filepath;
         this.user = user;

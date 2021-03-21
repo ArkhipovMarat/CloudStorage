@@ -2,31 +2,30 @@ package ru.netology.cloud_storage.service.app;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import ru.netology.cloud_storage.dto.FileData;
+import ru.netology.cloud_storage.entity.dto.FileData;
+import ru.netology.cloud_storage.entity.pdo.Users;
 import ru.netology.cloud_storage.exceptions.UserNotFoundException;
-import ru.netology.cloud_storage.pdo.FileStorageData;
-import ru.netology.cloud_storage.pdo.User;
+import ru.netology.cloud_storage.entity.pdo.FileStorageData;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
-import ru.netology.cloud_storage.repository.UsersRepository;
+import ru.netology.cloud_storage.repository.UserRepository;
 
 @Service
 public class StorageService {
     private final FileStorageRepository fileStorageRepository;
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public StorageService(FileStorageRepository fileStorageRepository, UsersRepository usersRepository) {
+    public StorageService(FileStorageRepository fileStorageRepository, UserRepository userRepository) {
         this.fileStorageRepository = fileStorageRepository;
-        this.usersRepository = usersRepository;
+        this.userRepository = userRepository;
     }
 
     public void store(String filename, FileData fileData) throws UserNotFoundException {
 
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User user = usersRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
+        Users user = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
 
         //  копируем файл куда-нибудь в каталог userfiles на сервере?
         String filepath = copyFile(filename, fileData);

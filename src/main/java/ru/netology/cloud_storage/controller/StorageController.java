@@ -5,10 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloud_storage.dto.ErrorInputData;
-import ru.netology.cloud_storage.dto.FileData;
+import ru.netology.cloud_storage.entity.dto.ErrorInputData;
+import ru.netology.cloud_storage.entity.dto.FileData;
 import ru.netology.cloud_storage.exceptions.UserNotFoundException;
-import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.service.app.StorageService;
 
 import java.io.IOException;
@@ -42,15 +41,15 @@ public class StorageController {
 
 
 //    ПЕРВЫЙ СПОСОБ
-    @PostMapping("/file")
-    public ResponseEntity<ErrorInputData> postFile1(@RequestParam String filename, @RequestBody FileData fileData) {
-        try {
-            storageService.store(filename, fileData);
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorInputData("User not found", 500));
-        }
-        return ResponseEntity.ok().body(null);
-    }
+//    @PostMapping("/file")
+//    public ResponseEntity<ErrorInputData> postFile1(@RequestParam String filename, @RequestBody FileData fileData) {
+//        try {
+//            storageService.store(filename, fileData);
+//        } catch (UserNotFoundException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorInputData("Users not found", 500));
+//        }
+//        return ResponseEntity.ok().body(null);
+//    }
 
 //    ВТОРОЙ СПОСОБ
     @PostMapping("/file")
@@ -62,7 +61,7 @@ public class StorageController {
         try {
             storageService.store2(filename, fileData);
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorInputData("User not found", 500));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorInputData("Users not found", 500));
         }
         return ResponseEntity.ok().body(null);
     }
@@ -93,5 +92,4 @@ public class StorageController {
         System.out.println("getList");
         return null;
     }
-
 }

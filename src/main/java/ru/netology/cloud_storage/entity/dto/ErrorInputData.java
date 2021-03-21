@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.dto;
+package ru.netology.cloud_storage.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
