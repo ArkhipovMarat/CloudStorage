@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import ru.netology.cloud_storage.entity.properties.FileStorageProperties;
 import ru.netology.cloud_storage.entity.pdo.Role;
 import ru.netology.cloud_storage.entity.pdo.Users;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
@@ -19,8 +18,6 @@ public class DataInit implements ApplicationRunner {
 
     private static final String  ROLE_USER = "ROLE_USER";
     private static final String  ROLE_ADMIN = "ROLE_ADMIN";
-
-
 
     @Autowired
     public DataInit(UserRepository userRepository, FileStorageRepository fileStorageRepository, RoleRepository roleRepository) {

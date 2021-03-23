@@ -5,14 +5,14 @@ import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "file")
 @Component
-public class FileStorageProperties {
-    private String upload;
+public class StorageProperties {
+    private String rootLocation;
 
-    public String getUpload() {
-        return upload;
+    public String getRootLocation() {
+        return rootLocation;
     }
 
-    public void setUpload(final String upload) {
-        this.upload = upload;
+    public void setRootLocation(String rootLocation) {
+        this.rootLocation = rootLocation;
     }
 }
