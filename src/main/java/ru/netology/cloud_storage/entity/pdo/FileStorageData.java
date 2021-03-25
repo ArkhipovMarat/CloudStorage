@@ -20,9 +20,9 @@ public class FileStorageData {
     private String filepath;
 
     @OneToOne
-    private Users user;
+    private UserPDO user;
 
-    public FileStorageData(String filename, String filepath, Users user) {
+    public FileStorageData(String filename, String filepath, UserPDO user) {
         this.filename = filename;
         this.filepath = filepath;
         this.user = user;

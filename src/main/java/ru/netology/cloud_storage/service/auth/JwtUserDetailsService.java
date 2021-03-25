@@ -8,30 +8,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.netology.cloud_storage.entity.pdo.Users;
+import ru.netology.cloud_storage.entity.pdo.UserPDO;
 import ru.netology.cloud_storage.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AppUserDetailService implements UserDetailsService {
+public class JwtUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    public AppUserDetailService(UserRepository userRepository) {
+    public JwtUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Users user = userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
+        UserPDO user = userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getRole()));
 
         return new User(user.getLogin(), user.getPassword(), true, true, true, true, authorities);
     }
+
 
 
 }

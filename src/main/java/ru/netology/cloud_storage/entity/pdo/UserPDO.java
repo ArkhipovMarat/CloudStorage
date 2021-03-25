@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Users", indexes = {@Index(name = "SEC_INDEX", columnList = "login")})
 
-public class Users {
+public class UserPDO {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -25,7 +25,7 @@ public class Users {
     @OneToOne()
     private Role role;
 
-    public Users(String login, String password, Role role) {
+    public UserPDO(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;

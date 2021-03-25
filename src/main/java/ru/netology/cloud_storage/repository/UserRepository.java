@@ -2,11 +2,11 @@ package ru.netology.cloud_storage.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.netology.cloud_storage.entity.pdo.Users;
+import ru.netology.cloud_storage.entity.pdo.UserPDO;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, Long> {
-    Optional<Users> findByLogin(String login);
+public interface UserRepository extends JpaRepository<UserPDO, Long> {
+    Optional<UserPDO> findByLogin(String login);
 }

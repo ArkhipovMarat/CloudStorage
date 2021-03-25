@@ -1,51 +1,80 @@
 package ru.netology.cloud_storage.configuration.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ru.netology.cloud_storage.service.auth.AppUserDetailService;
+import ru.netology.cloud_storage.service.auth.JwtUserDetailsService;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final AppUserDetailService userDetailService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(AppUserDetailService userDetailService) {
+    private final JwtUserDetailsService userDetailService;
+
+    private final JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtUserDetailsService userDetailService, JwtRequestFilter jwtRequestFilter) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.userDetailService = userDetailService;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        auth.userDetailsService(userDetailService).passwordEncoder(encoder);
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
+    }
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//        auth.userDetailsService(userDetailService).passwordEncoder(encoder);
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .cors()
                 .and()
-                .formLogin()
-                .loginProcessingUrl("/login")
-                .usernameParameter("login")
-                .passwordParameter("password")
+                .authorizeRequests().antMatchers("/login").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                .deleteCookies("JSESSIONID")
+                // make sure we use stateless session;
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
-                .authorizeRequests()
-                .antMatchers("/login*").permitAll()
-                .anyRequest().authenticated();
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                // Add a filter to validate the tokens with every request
+                .and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
