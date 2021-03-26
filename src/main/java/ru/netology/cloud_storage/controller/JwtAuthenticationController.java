@@ -16,6 +16,9 @@ import ru.netology.cloud_storage.entity.dto.JwtRequest;
 import ru.netology.cloud_storage.entity.dto.JwtResponse;
 import ru.netology.cloud_storage.service.auth.JwtUserDetailsService;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class JwtAuthenticationController {
     private AuthenticationManager authenticationManager;
@@ -39,8 +42,7 @@ public class JwtAuthenticationController {
 
         final String jwtToken = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok().header("auth-token", jwtToken).body(null);
-//        return ResponseEntity.ok(new JwtResponse(jwtToken));
+        return ResponseEntity.ok(new JwtResponse(jwtToken));
     }
 
     private void authenticate(String login, String password) throws Exception {

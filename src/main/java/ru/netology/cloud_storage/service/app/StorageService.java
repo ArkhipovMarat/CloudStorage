@@ -1,17 +1,19 @@
 package ru.netology.cloud_storage.service.app;
 
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloud_storage.entity.pdo.FileStorageData;
+import ru.netology.cloud_storage.entity.pdo.UserPDO;
 import ru.netology.cloud_storage.entity.properties.StorageProperties;
 import ru.netology.cloud_storage.exceptions.StorageException;
+import ru.netology.cloud_storage.exceptions.UserNotFoundException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,8 +30,8 @@ public class StorageService {
     }
 
     public void store(MultipartFile file, String filename, Path filepath) throws StorageException {
-        try (InputStream in = file.getInputStream()) {
-            Files.copy(in, filepath);
+        try {
+            Files.write(filepath, file.getBytes());
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);
         }
@@ -43,6 +45,14 @@ public class StorageService {
         }
     }
 
+    public void renameFile(Path filepath, String newFilename) {
+        try {
+            Files.move(filepath, filepath.resolveSibling(newFilename));
+        } catch (IOException e) {
+            throw new StorageException("Failed to rename file " + filepath.getFileName(), e);
+        }
+    }
+
     public Stream<Path> loadAll(Path searchPath) {
         try {
             return Files.walk(this.rootLocation, 1)
@@ -53,27 +63,22 @@ public class StorageService {
         }
     }
 
-    public Path load(String filename) {
-        return rootLocation.resolve(filename);
-    }
-
-    public Resource loadAsResource(String filename) {
+    public Resource loadAsResource(String filename, Path filepath) {
         try {
-            Path file = load(filename);
-            Resource resource = new UrlResource(file.toUri());
+            Resource resource = new UrlResource(filepath.toUri());
+
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new StorageException("Could not read file: " + filename);
+                throw new StorageException("Could not load file: " + filename);
             }
+
         } catch (MalformedURLException e) {
-            throw new StorageException("Could not read file: " + filename, e);
+            throw new StorageException("Could not load file: " + filename, e);
         }
     }
 
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
-
-
 }

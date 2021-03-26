@@ -20,7 +20,6 @@ import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-//    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_HEADER = "auth-token";
 
     private final JwtUserDetailsService jwtUserDetailsService;
@@ -37,15 +36,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String requestTokenHeader = request.getHeader(AUTHORIZATION_HEADER);
 
-        System.out.println(requestTokenHeader);
-
         String login = null;
         String jwtToken = null;
 
-
-        // JWT Token is in the form "Bearer token". Remove Bearer word and get
-        // only the Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+        // Remove Bearer word and get only the Token
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ") && !requestTokenHeader.equals("Bearer null")) {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 login = jwtTokenUtil.getUserNameFromToken(jwtToken);

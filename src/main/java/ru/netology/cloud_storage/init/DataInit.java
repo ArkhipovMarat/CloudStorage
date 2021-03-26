@@ -7,15 +7,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.netology.cloud_storage.entity.pdo.Role;
 import ru.netology.cloud_storage.entity.pdo.UserPDO;
+import ru.netology.cloud_storage.entity.properties.StorageProperties;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.repository.RoleRepository;
 import ru.netology.cloud_storage.repository.UserRepository;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
 public class DataInit implements ApplicationRunner {
     private final UserRepository userRepository;
     private final FileStorageRepository fileStorageRepository;
     private final RoleRepository roleRepository;
+    private final Path rootLocation;
 
     private static final String  ROLE_USER = "ROLE_USER";
     private static final String  ROLE_ADMIN = "ROLE_ADMIN";
@@ -24,10 +31,12 @@ public class DataInit implements ApplicationRunner {
     private PasswordEncoder bcryptEncoder;
 
     @Autowired
-    public DataInit(UserRepository userRepository, FileStorageRepository fileStorageRepository, RoleRepository roleRepository) {
+    public DataInit(UserRepository userRepository, FileStorageRepository fileStorageRepository,
+                    RoleRepository roleRepository, StorageProperties storageProperties) {
         this.userRepository = userRepository;
         this.fileStorageRepository = fileStorageRepository;
         this.roleRepository = roleRepository;
+        this.rootLocation = Paths.get(storageProperties.getRootLocation());
     }
 
     @Override
@@ -51,6 +60,14 @@ public class DataInit implements ApplicationRunner {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        userRepository.findAll().forEach(System.out::println);
+        // creating user directories
+        userRepository.findAll().forEach(userPDO -> {
+            try {
+                Files.createDirectories(rootLocation.resolve(userPDO.getLogin()));
+            } catch (IOException e) {
+                throw new RuntimeException("couldn't create user directories");
+            }
+            System.out.println(userPDO);
+        });
     }
 }
