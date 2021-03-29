@@ -23,6 +23,8 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.0.Final'
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
+	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+
 	compile 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 }

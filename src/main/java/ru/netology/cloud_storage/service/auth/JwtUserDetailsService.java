@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.netology.cloud_storage.entity.pdo.UserPDO;
+import ru.netology.cloud_storage.entity.UserEntity;
 import ru.netology.cloud_storage.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        UserPDO user = userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
+        UserEntity user = userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().getRole()));

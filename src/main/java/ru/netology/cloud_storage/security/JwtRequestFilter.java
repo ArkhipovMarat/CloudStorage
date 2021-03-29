@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.configuration.security;
+package ru.netology.cloud_storage.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;

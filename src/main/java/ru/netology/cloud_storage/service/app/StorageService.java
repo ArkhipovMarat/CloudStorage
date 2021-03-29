@@ -1,17 +1,13 @@
 package ru.netology.cloud_storage.service.app;
 
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloud_storage.entity.pdo.FileStorageData;
-import ru.netology.cloud_storage.entity.pdo.UserPDO;
-import ru.netology.cloud_storage.entity.properties.StorageProperties;
+import ru.netology.cloud_storage.properties.StorageProperties;
 import ru.netology.cloud_storage.exceptions.StorageException;
-import ru.netology.cloud_storage.exceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.entity.pdo;
+package ru.netology.cloud_storage.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,9 +30,9 @@ public class FileStorageData {
 
     @JsonIgnore
     @OneToOne
-    private UserPDO user;
+    private UserEntity user;
 
-    public FileStorageData(String filename, String filepath, Integer size,UserPDO user) {
+    public FileStorageData(String filename, String filepath, Integer size, UserEntity user) {
         this.filename = filename;
         this.filepath = filepath;
         this.size = size;

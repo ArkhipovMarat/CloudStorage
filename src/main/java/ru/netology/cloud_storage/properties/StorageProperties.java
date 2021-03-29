@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.entity.properties;
+package ru.netology.cloud_storage.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

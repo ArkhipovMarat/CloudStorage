@@ -3,8 +3,8 @@ package ru.netology.cloud_storage.repository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.netology.cloud_storage.entity.pdo.FileStorageData;
-import ru.netology.cloud_storage.entity.pdo.UserPDO;
+import ru.netology.cloud_storage.entity.FileStorageData;
+import ru.netology.cloud_storage.entity.UserEntity;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface FileStorageRepository extends JpaRepository<FileStorageData,Lon
     @Override
     <S extends FileStorageData> S saveAndFlush(S entity);
 
-    FileStorageData findByFilenameAndUser(String filename, UserPDO userPDO);
+    FileStorageData findByFilenameAndUser(String filename, UserEntity userEntity);
 }

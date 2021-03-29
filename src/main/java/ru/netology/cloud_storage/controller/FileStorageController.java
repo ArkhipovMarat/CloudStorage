@@ -1,15 +1,22 @@
 package ru.netology.cloud_storage.controller;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloud_storage.entity.pdo.FileStorageData;
+import ru.netology.cloud_storage.entity.FileStorageData;
 import ru.netology.cloud_storage.service.app.FileService;
 
 import org.springframework.validation.annotation.Validated;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 @Validated
@@ -34,9 +41,14 @@ public class FileStorageController {
         return ResponseEntity.ok().body(null);
     }
 
-    @GetMapping("/file")
-    public ResponseEntity<Resource> getFile(@RequestParam("filename") String filename) {
-        return ResponseEntity.ok(fileService.getFile(filename));
+    @GetMapping(value = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<?> getFile(@RequestParam("filename") String filename) throws IOException {
+        Resource resource = fileService.getFile(filename);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 
     @RequestMapping(value = "/file", method = RequestMethod.PUT)

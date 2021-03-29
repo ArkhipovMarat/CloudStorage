@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.configuration.security;
+package ru.netology.cloud_storage.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.netology.cloud_storage.service.auth.JwtUserDetailsService;
+
 import java.util.List;
 
 @Configuration
@@ -59,8 +60,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                // use stateless session;
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                // use stateless session;
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 

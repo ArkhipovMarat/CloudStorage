@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloud_storage.entity.pdo.FileStorageData;
-import ru.netology.cloud_storage.entity.pdo.UserPDO;
-import ru.netology.cloud_storage.entity.properties.StorageProperties;
+import ru.netology.cloud_storage.entity.FileStorageData;
+import ru.netology.cloud_storage.entity.UserEntity;
+import ru.netology.cloud_storage.properties.StorageProperties;
 import ru.netology.cloud_storage.exceptions.StorageException;
-import ru.netology.cloud_storage.exceptions.UserNotFoundException;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.repository.UserRepository;
 
@@ -65,7 +65,7 @@ public class FileService {
     }
 
     public Resource getFile(String filename) {
-        return storageService.loadAsResource(filename, getUserPath());
+        return storageService.loadAsResource(filename, getFilePath(filename));
     }
 
     @Transactional
@@ -90,9 +90,9 @@ public class FileService {
                 (int) file.getSize(), getUser());
     }
 
-    private UserPDO getUser() {
+    private UserEntity getUser() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
+        return userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
     }
 
     private Path getFilePath(String filename) {

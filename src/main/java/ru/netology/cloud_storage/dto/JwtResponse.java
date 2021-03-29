@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.entity.dto;
+package ru.netology.cloud_storage.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

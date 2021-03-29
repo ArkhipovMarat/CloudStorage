@@ -5,9 +5,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import ru.netology.cloud_storage.entity.pdo.Role;
-import ru.netology.cloud_storage.entity.pdo.UserPDO;
-import ru.netology.cloud_storage.entity.properties.StorageProperties;
+import ru.netology.cloud_storage.entity.Role;
+import ru.netology.cloud_storage.entity.UserEntity;
+import ru.netology.cloud_storage.properties.StorageProperties;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.repository.RoleRepository;
 import ru.netology.cloud_storage.repository.UserRepository;
@@ -47,12 +47,12 @@ public class DataInit implements ApplicationRunner {
         roleRepository.save(roleAdmin);
         roleRepository.save(roleUser);
 
-        UserPDO user1 = new UserPDO();
+        UserEntity user1 = new UserEntity();
         user1.setLogin("user1");
         user1.setPassword(bcryptEncoder.encode("password1"));
         user1.setRole(roleAdmin);
 
-        UserPDO user2 = new UserPDO();
+        UserEntity user2 = new UserEntity();
         user2.setLogin("user2");
         user2.setPassword(bcryptEncoder.encode("password2"));
         user2.setRole(roleAdmin);

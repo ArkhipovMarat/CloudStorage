@@ -1,23 +1,23 @@
 package ru.netology.cloud_storage.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.netology.cloud_storage.configuration.security.JwtTokenUtil;
-import ru.netology.cloud_storage.entity.dto.JwtRequest;
-import ru.netology.cloud_storage.entity.dto.JwtResponse;
+import ru.netology.cloud_storage.dto.ResponseError;
+import ru.netology.cloud_storage.security.JwtTokenUtil;
+import ru.netology.cloud_storage.dto.JwtRequest;
+import ru.netology.cloud_storage.dto.JwtResponse;
 import ru.netology.cloud_storage.service.auth.JwtUserDetailsService;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class JwtAuthenticationController {
@@ -48,10 +48,13 @@ public class JwtAuthenticationController {
     private void authenticate(String login, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER DISABLED", e);
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID CREDENTIALS", e);
+            throw new BadCredentialsException("INVALID CREDENTIALS", e);
         }
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResponseError> handleBadCredentialsException(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError(e.getMessage(), 400));
     }
 }

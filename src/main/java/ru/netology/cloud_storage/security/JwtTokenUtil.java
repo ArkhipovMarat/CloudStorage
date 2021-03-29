@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.configuration.security;
+package ru.netology.cloud_storage.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
