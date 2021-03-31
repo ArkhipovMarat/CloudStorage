@@ -14,25 +14,31 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "Filestorage")
 public class FileStorageData {
+    // front properties to use fileStorageData as dto object -> front must to rename "name" to "filename"
+    private static final String SIZE= "size";
+    private static final String FILENAME = "name";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
 
-    @JsonProperty("name")
+    // front property
+    @JsonProperty(FILENAME)
     private String filename;
 
     @JsonIgnore
     private String filepath;
 
-    @JsonProperty("size")
-    private Integer size;
+    // front property
+    @JsonProperty(SIZE)
+    private Long size;
 
     @JsonIgnore
     @OneToOne
     private UserEntity user;
 
-    public FileStorageData(String filename, String filepath, Integer size, UserEntity user) {
+    public FileStorageData(String filename, String filepath, Long size, UserEntity user) {
         this.filename = filename;
         this.filepath = filepath;
         this.size = size;

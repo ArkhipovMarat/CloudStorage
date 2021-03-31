@@ -32,7 +32,4 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         return new User(user.getLogin(), user.getPassword(), true, true, true, true, authorities);
     }
-
-
-
 }

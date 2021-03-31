@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class StorageProperties {
     private String rootLocation;
 
+    //     getters/setters
     public String getRootLocation() {
         return rootLocation;
     }

@@ -14,8 +14,5 @@ public interface FileStorageRepository extends JpaRepository<FileStorageData,Lon
 
     void removeFileDataByFilename(String fileName);
 
-    @Override
-    <S extends FileStorageData> S saveAndFlush(S entity);
-
     FileStorageData findByFilenameAndUser(String filename, UserEntity userEntity);
 }

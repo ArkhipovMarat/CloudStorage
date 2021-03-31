@@ -10,20 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloud_storage.entity.FileStorageData;
 import ru.netology.cloud_storage.entity.UserEntity;
 import ru.netology.cloud_storage.properties.StorageProperties;
-import ru.netology.cloud_storage.exceptions.StorageException;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.repository.UserRepository;
 
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 @Service
 public class FileService {
+    private static final String SORT_ELEMENT_NAME = "filename";
+
     private final StorageService storageService;
     private final UserRepository userRepository;
     private final FileStorageRepository fileStorageRepository;
@@ -38,23 +36,13 @@ public class FileService {
         this.rootLocation = Paths.get(storageProperties.getRootLocation());
     }
 
-    // CREATING ROOT DIRECTORY - ONCE ON START
-    @PostConstruct
-    public void init() {
-        try {
-            Files.createDirectories(rootLocation);
-        } catch (IOException e) {
-            throw new StorageException("Could not initialize storage location", e);
-        }
-    }
-
     @Transactional
     public void postFile(String filename, MultipartFile file) {
         FileStorageData fileStorageData = getFileStorageData(filename, file);
 
         fileStorageRepository.saveAndFlush(fileStorageData);
 
-        storageService.store(file, filename, Path.of(fileStorageData.getFilepath()));
+        storageService.store(file, filename, getFilePath(filename));
     }
 
     @Transactional
@@ -70,7 +58,7 @@ public class FileService {
 
     @Transactional
     public List<FileStorageData> getList() {
-        return fileStorageRepository.findAllByUser_Login(getUser().getLogin(), Sort.by("filename"));
+        return fileStorageRepository.findAllByUser_Login(getUser().getLogin(), Sort.by(SORT_ELEMENT_NAME));
     }
 
     @Transactional
@@ -84,10 +72,10 @@ public class FileService {
         storageService.renameFile(getFilePath(filename), newFilename);
     }
 
-    // Userful Methods
+
     private FileStorageData getFileStorageData(String filename, MultipartFile file) {
         return new FileStorageData(filename, getFilePath(filename).toAbsolutePath().toString(),
-                (int) file.getSize(), getUser());
+                file.getSize(), getUser());
     }
 
     private UserEntity getUser() {

@@ -4,6 +4,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import ru.netology.cloud_storage.dto.ResponseError;
+import ru.netology.cloud_storage.exceptions.Errors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,15 +16,16 @@ import java.io.Serializable;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
     private static final long serialVersionUID = -7858869558953243875L;
-
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized request");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        String responseError = "{\"message\":\"Bad Credentials\",\"id\":\"400\"}";
-        response.getWriter().write(responseError);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, Errors.UNAUTHORIZED_REQUEST.getDescription());
+
+
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        String responseError = "{\"message\":\"Unauthorized request\",\"id\":\"401\"}";
+//        response.getWriter().write(responseError);
     }
 }

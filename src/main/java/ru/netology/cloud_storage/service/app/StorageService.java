@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.netology.cloud_storage.exceptions.Errors;
 import ru.netology.cloud_storage.properties.StorageProperties;
 import ru.netology.cloud_storage.exceptions.StorageException;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -25,11 +27,22 @@ public class StorageService {
         this.rootLocation = Paths.get(storageProperties.getRootLocation());
     }
 
+    // CREATING ROOT DIRECTORY - ONCE ON START
+    @PostConstruct
+    public void init() {
+        try {
+            Files.createDirectories(rootLocation);
+        } catch (IOException e) {
+            throw new RuntimeException(Errors.COULD_NOT_INITIALIZE_STORAGE_LOCATION.getDescription(), e);
+        }
+    }
+
     public void store(MultipartFile file, String filename, Path filepath) throws StorageException {
         try {
             Files.write(filepath, file.getBytes());
         } catch (IOException e) {
-            throw new StorageException("Failed to store file " + filename, e);
+            throw new StorageException(Errors.FAILED_TO_STORE_FILE.getDescription() + filename
+                    + " " + e.getMessage(), e);
         }
     }
 
@@ -37,7 +50,8 @@ public class StorageService {
         try {
             Files.deleteIfExists(filepath);
         } catch (IOException e) {
-            throw new StorageException("Failed to delete file " + filepath.getFileName(), e);
+            throw new StorageException(Errors.FAILED_TO_DELETE_FILE.getDescription() + filepath.getFileName()
+                    + " " + e.getMessage(), e);
         }
     }
 
@@ -45,7 +59,8 @@ public class StorageService {
         try {
             Files.move(filepath, filepath.resolveSibling(newFilename));
         } catch (IOException e) {
-            throw new StorageException("Failed to rename file " + filepath.getFileName(), e);
+            throw new StorageException(Errors.FAILED_TO_RENAME_FILE.getDescription() + filepath.getFileName()
+                    + " " + e.getMessage(), e);
         }
     }
 
@@ -55,7 +70,7 @@ public class StorageService {
                     .filter(path -> path.equals(searchPath))
                     .map(this.rootLocation::relativize);
         } catch (IOException e) {
-            throw new StorageException("Failed to read stored files", e);
+            throw new StorageException(Errors.FAILED_TO_READ_STORED_FILES.getDescription() + e.getMessage(), e);
         }
     }
 
@@ -66,11 +81,13 @@ public class StorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new StorageException("Could not load file: " + filename);
+                throw new StorageException(Errors.COULD_NOT_LOAD_FILE.getDescription() + filename
+                + Errors.FILE_NOT_READABLE.getDescription());
             }
 
         } catch (MalformedURLException e) {
-            throw new StorageException("Could not load file: " + filename, e);
+            throw new StorageException(Errors.COULD_NOT_LOAD_FILE.getDescription() + filename
+                    + " " + e.getMessage(), e);
         }
     }
 
