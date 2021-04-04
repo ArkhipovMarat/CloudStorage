@@ -33,7 +33,7 @@ public class StorageService {
         try {
             Files.createDirectories(rootLocation);
         } catch (IOException e) {
-            throw new RuntimeException(Errors.COULD_NOT_INITIALIZE_STORAGE_LOCATION.getDescription(), e);
+            throw new RuntimeException(Errors.COULD_NOT_INITIALIZE_STORAGE_LOCATION.value(), e);
         }
     }
 
@@ -41,7 +41,7 @@ public class StorageService {
         try {
             Files.write(filepath, file.getBytes());
         } catch (IOException e) {
-            throw new StorageException(Errors.FAILED_TO_STORE_FILE.getDescription() + filename
+            throw new StorageException(Errors.FAILED_TO_STORE_FILE.value() + filename
                     + " " + e.getMessage(), e);
         }
     }
@@ -50,7 +50,7 @@ public class StorageService {
         try {
             Files.deleteIfExists(filepath);
         } catch (IOException e) {
-            throw new StorageException(Errors.FAILED_TO_DELETE_FILE.getDescription() + filepath.getFileName()
+            throw new StorageException(Errors.FAILED_TO_DELETE_FILE.value() + filepath.getFileName()
                     + " " + e.getMessage(), e);
         }
     }
@@ -59,7 +59,7 @@ public class StorageService {
         try {
             Files.move(filepath, filepath.resolveSibling(newFilename));
         } catch (IOException e) {
-            throw new StorageException(Errors.FAILED_TO_RENAME_FILE.getDescription() + filepath.getFileName()
+            throw new StorageException(Errors.FAILED_TO_RENAME_FILE.value() + filepath.getFileName()
                     + " " + e.getMessage(), e);
         }
     }
@@ -70,7 +70,7 @@ public class StorageService {
                     .filter(path -> path.equals(searchPath))
                     .map(this.rootLocation::relativize);
         } catch (IOException e) {
-            throw new StorageException(Errors.FAILED_TO_READ_STORED_FILES.getDescription() + e.getMessage(), e);
+            throw new StorageException(Errors.FAILED_TO_READ_STORED_FILES.value() + e.getMessage(), e);
         }
     }
 
@@ -81,12 +81,12 @@ public class StorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new StorageException(Errors.COULD_NOT_LOAD_FILE.getDescription() + filename
-                + Errors.FILE_NOT_READABLE.getDescription());
+                throw new StorageException(Errors.COULD_NOT_LOAD_FILE.value() + filename
+                + Errors.FILE_NOT_READABLE.value());
             }
 
         } catch (MalformedURLException e) {
-            throw new StorageException(Errors.COULD_NOT_LOAD_FILE.getDescription() + filename
+            throw new StorageException(Errors.COULD_NOT_LOAD_FILE.value() + filename
                     + " " + e.getMessage(), e);
         }
     }

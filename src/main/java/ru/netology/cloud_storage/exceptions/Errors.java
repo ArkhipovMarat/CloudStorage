@@ -11,7 +11,7 @@ public enum Errors {
     FILE_NOT_READABLE (" file is not readable or exists"),
 
     // security errors
-    BAD_CREDENTILAS("Wrong login and password "),
+    BAD_CREDENTIALS("Wrong login and password "),
     UNAUTHORIZED_REQUEST("Unauthorized request "),
 
     // data init error
@@ -23,7 +23,7 @@ public enum Errors {
         this.description = description;
     }
 
-    public String getDescription() {
+    public String value() {
         return description;
     }
 }

@@ -50,7 +50,7 @@ public class JwtAuthenticationController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException(Errors.BAD_CREDENTILAS.getDescription() + e.getMessage(), e);
+            throw new BadCredentialsException(Errors.BAD_CREDENTIALS.value() + e.getMessage(), e);
         }
     }
 

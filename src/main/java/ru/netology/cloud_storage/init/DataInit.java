@@ -9,7 +9,6 @@ import ru.netology.cloud_storage.entity.Role;
 import ru.netology.cloud_storage.entity.UserEntity;
 import ru.netology.cloud_storage.exceptions.Errors;
 import ru.netology.cloud_storage.properties.StorageProperties;
-import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.repository.RoleRepository;
 import ru.netology.cloud_storage.repository.UserRepository;
 
@@ -70,7 +69,7 @@ public class DataInit implements ApplicationRunner {
             try {
                 Files.createDirectories(rootLocation.resolve(userPDO.getLogin()));
             } catch (IOException e) {
-                throw new RuntimeException(Errors.COULD_NOT_CREATE_USER_DIRECTORIES.getDescription() + e.getMessage());
+                throw new RuntimeException(Errors.COULD_NOT_CREATE_USER_DIRECTORIES.value() + e.getMessage());
             }
             System.out.println(userPDO);
         });

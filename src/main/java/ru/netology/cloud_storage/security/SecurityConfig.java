@@ -23,8 +23,11 @@ import ru.netology.cloud_storage.service.auth.JwtUserDetailsService;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    // login path
+    // login/logout paths
     private static final String LOGIN = "/login";
+    private static final String LOGOUT = "/logout";
+
+    private static final String COOKIE = "JSESSIONID";
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -63,9 +66,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .cors()
+
                 .and()
                 .authorizeRequests().antMatchers(LOGIN).permitAll()
                 .anyRequest().authenticated()
+
+                .and()
+                .logout()
+                .logoutUrl(LOGOUT)
+                .deleteCookies(COOKIE)
+                .clearAuthentication(true)
+
+                // exception handler
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
 
@@ -75,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // filter to validate the tokens with every request
                 .and()
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
