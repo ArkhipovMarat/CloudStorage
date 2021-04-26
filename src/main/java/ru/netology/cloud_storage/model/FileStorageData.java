@@ -1,4 +1,4 @@
-package ru.netology.cloud_storage.entity;
+package ru.netology.cloud_storage.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

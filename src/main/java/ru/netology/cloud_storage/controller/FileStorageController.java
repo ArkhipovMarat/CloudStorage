@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloud_storage.dto.ResponseError;
-import ru.netology.cloud_storage.entity.FileStorageData;
+import ru.netology.cloud_storage.model.FileStorageData;
 import ru.netology.cloud_storage.exceptions.StorageException;
 import ru.netology.cloud_storage.service.app.FileService;
 import org.springframework.validation.annotation.Validated;
@@ -65,8 +65,9 @@ public class FileStorageController {
 
     @GetMapping(LIST)
     public ResponseEntity<?> getList() {
-        return ResponseEntity.ok(fileService.getList());
+        return ResponseEntity.ok().body(fileService.getList());
     }
+
 
 
     // handle 400 error

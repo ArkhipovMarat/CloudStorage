@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloud_storage.entity.FileStorageData;
-import ru.netology.cloud_storage.entity.UserEntity;
+import ru.netology.cloud_storage.model.FileStorageData;
+import ru.netology.cloud_storage.model.UserEntity;
 import ru.netology.cloud_storage.properties.StorageProperties;
 import ru.netology.cloud_storage.repository.FileStorageRepository;
 import ru.netology.cloud_storage.repository.UserRepository;
@@ -41,14 +41,12 @@ public class FileService {
         FileStorageData fileStorageData = getFileStorageData(filename, file);
 
         fileStorageRepository.saveAndFlush(fileStorageData);
-
         storageService.store(file, filename, getFilePath(filename));
     }
 
     @Transactional
     public void deleteFile(String filename) {
         fileStorageRepository.removeFileDataByFilename(filename);
-
         storageService.deleteFile(getFilePath(filename));
     }
 
